@@ -1,0 +1,292 @@
+{% extends 'shared/layout.html' %} {% block styles %}
+<link rel="stylesheet" href="{{url_for('static', filename='bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css')}}"> {% endblock %} {% block content %}
+
+<div class="col-md-12" id="float">
+  <!-- Custom Tabs -->
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a href="#tab_1" data-toggle="tab">Balance</a>
+      </li>
+      <li>
+        <a href="#tab_2" data-toggle="tab">Update floats</a>
+      </li>
+      <li>
+        <a href="#tab_3" data-toggle="tab">Tab 3</a>
+      </li>
+
+      <li class="pull-right">
+        <a href="#" class="text-muted">
+          <i class="fa fa-gear"></i>
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active" id="tab_1">
+        <div class="row">
+          <div class="col-md-4">
+            <!-- Widget: user widget style 1 -->
+            <div class="box box-widget widget-user-2">
+              <!-- Add the bg color to the header using any of the bg-* classes -->
+              <div class="widget-user-header bg-green">
+                <!-- /.widget-user-image -->
+                <h3>Available Balance</h3>
+              </div>
+              <div class="box-footer no-padding bg-green">
+                <h3>KSH 300</h3>
+              </div>
+            </div>
+            <!-- /.widget-user -->
+          </div>
+          <div class="col-md-4">
+            <!-- Widget: user widget style 1 -->
+            <div class="box box-widget widget-user-2">
+              <!-- Add the bg color to the header using any of the bg-* classes -->
+              <div class="widget-user-header bg-red">
+                <!-- /.widget-user-image -->
+                <h3>Locked Balance</h3>
+              </div>
+              <div class="box-footer no-padding bg-red">
+                <h3>KSH 200</h3>
+              </div>
+            </div>
+            <!-- /.widget-user -->
+          </div>
+        </div>
+        <section class="content">
+          <div class="row">
+            <div class="col-md-3">
+
+              <div class="box box-solid">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Merchants</h3>
+
+                  <div class="box-tools">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                      <i class="fa fa-minus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="box-body no-padding">
+                  <table id="example1" class="table table-hover table-striped">
+                    <thead>
+                      <tr>
+                        <input class="form-control" aria-placeholder="Search" type="search">
+                      </tr>
+                      <tr>
+                        <th>Name</th>
+                    </thead>
+                    <tbody>
+                      {% for merchant in merchants %}
+                      <tr v-on:click="getFloatUpdateHistory({{merchant.id}})">
+                        <td>
+
+                          <div class="box-title">{{merchant.business_name}}</div>
+
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+
+                </div>
+                <!-- /.box-body -->
+              </div>
+
+            </div>
+            <!-- /.col -->
+
+            <div class="col-md-9">
+              <div class="box box-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Float History</h3>
+
+                  <div class="box-tools pull-right">
+                    <div class="has-feedback">
+                      <input type="text" class="form-control input-sm" placeholder="Search Mail">
+                      <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                    </div>
+                  </div>
+                  <!-- /.box-tools -->
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+
+                  <div class="table-responsive mailbox-messages">
+                    <table id="example1" class="table table-hover table-striped">
+                      <thead>
+                        <tr>
+                          <th>Amount</th>
+                          <th>Created on</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        <tr v-for="update in updatehistory">
+                          <td class="mailbox-star">
+                            {% raw %} {{update.amount}} {% endraw %}
+                          </td>
+                          <td class="mailbox-name">
+                            {% raw %} {{update.created_at | longDate}} {% endraw %}
+                          </td>
+
+                        </tr>
+                      </tbody>
+                    </table>
+                    <!-- /.table -->
+                  </div>
+                  <!-- /.mail-box-messages -->
+                </div>
+                <!-- /.box-body -->
+
+              </div>
+              <!-- /. box -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </section>
+      </div>
+      <div class="tab-pane" id="tab_2">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="col-md-6">
+
+              <!-- text input -->
+              <div class="form-group">
+                <label>Merchant</label>
+                <select name="merchant" class="form-control" v-model="merchant" @change="getbalance(merchant)">
+                  <option value="0"> select merchant</option>
+                  {% for merchant in merchants %}
+                  <option value="{{merchant.id}}">{{merchant.business_name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Amount</label>
+                <input type="number" name="amount" class="form-control" required v-model="amount">
+
+              </div>
+
+
+
+              <button class="btn btn-primary" v-on:click="addFloat">Update</button>
+
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+
+                <p>
+                  {% raw %}
+                  <span>
+                    <label> Current: </label> {{balance}} </span>
+                  <br>
+                  <b> + </b>
+                  </br>
+                  <span>
+                    <label> New: </label> {{amount}} </span>
+                  {% endraw %}
+                </p>
+                <div>
+                  <label>Balance</label> {% raw %} {{total}} {% endraw %}
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.tab-pane -->
+
+
+    </div>
+    <!-- /.tab-content -->
+  </div>
+  <!-- nav-tabs-custom -->
+</div>
+{% endblock %} {% block scripts %}
+
+<script src="{{url_for('static', filename='js/moment.min.js')}}"></script>
+
+<script>
+  var float = new Vue({
+    el: '#float',
+    data: {
+      balance: 0,
+      amount: 0,
+      merchant: 0,
+      total: 0,
+      updatehistory: []
+    },
+    watch: {
+      amount: (new_amount) => {
+        this.balance = this.balance == undefined ? 0 : this.balance
+        float.total = parseInt(float.balance) + parseInt(new_amount)
+
+        console.log(this.total)
+      },
+      balance: (new_balance) => {
+        this.total = this.amount + new_balance
+      }
+
+    },
+    methods: {
+
+      getbalance: (merchantid) => {
+        axios.get(`/float/balance/merchant/${merchantid}`)
+          .then(success => {
+            if (success.data) {
+              float.balance = success.data.amount
+            }
+          })
+          .catch(error => console.log(error))
+      },
+      addFloat: () => {
+        axios.post(`/float/${float.merchant}`, { amount: float.amount }, {
+          headers: {
+            'content-type': 'application/json'
+          }
+        })
+          .then(success => {
+            console.log(success.data)
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      },
+      getFloatUpdateHistory: (merchantid) => {
+        console.log(merchantid)
+        axios.get(`/float/updates/merchant/${merchantid}`)
+          .then(success => {
+            float.updatehistory = success.data
+            console.log(this.updatehistory)
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
+    },
+    filters: {
+      longDate: (date_to_format) => {
+        return moment(date_to_format).format('lll')
+      }
+    }
+  })
+</script>
+
+<!-- DataTables -->
+<script src="{{url_for('static', filename='bower_components/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+<script src="{{url_for('static', filename='bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
+<script>
+  $(function () {
+
+    $('#example1').DataTable({
+      'paging': false,
+      'lengthChange': false,
+      'searching': false,
+      'ordering': true,
+      'info': true,
+      'autoWidth': false
+    })
+  })
+</script> {% endblock%}

@@ -1,0 +1,135 @@
+{% extends 'shared/layout.html' %}
+
+{% block styles %}
+
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{{url_for('static', filename='bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css')}}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+<div class="box-body col-md-10">
+    <form role="form" action="merchant" method="POST">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- text input -->
+                <div class="form-group">
+                    <label>Business name</label>
+                    <input type="text" name="business_name" class="form-control" required >
+                </div>
+               
+                
+                <div class="form-group">
+                    <label>Physical address</label>
+                    <input type="text" name="physical_address" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Box number</label>
+                    <input type="text" name="box_number" class="form-control" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Business Registration Number</label>
+                    <input type="text" name="business_regno" class="form-control" required >
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+        
+                <div class="form-group">
+                    <label>Date of registration</label>
+                    <input type="date" name="date_of_reg" class="form-control" required>
+                </div>
+
+            </div>
+    </div>
+<button class="btn btn-primary">Create</button>
+    </form>
+  </div>
+
+  <div class="row"> 
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Merchants</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="example2" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>Business Name</th>
+                  <th>Address</th>
+                  <th>Registration Number</th>
+                  <th>Date of registration</th>
+                  <th>Email</th>
+                  <th>Code</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody> 
+                {% for merchant in merchants %}
+                <tr>
+                  <td>{{merchant.business_name}}</td>
+                  <td><strong>Box Number:</strong> {{merchant.box_number}} <br>
+                      <strong>Physical address:</strong> {{merchant.physical_address}} 
+                  </td>
+                  <td>{{merchant.registration_number}}</td>
+                  <td>{{merchant.date_of_reg}}</td>
+                  <td> {{merchant.email}}</td>
+                  <td> {{merchant.code}}</td>
+                  <td>True</td>
+                  <td>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-default">Action</button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                      <span class="caret"></span>
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a href="#">Edit</a></li>
+                      <li><a href="#">Deactivate</a></li>
+                    </ul>
+                  </div>
+                  </td>
+                </tr>
+                {% endfor %}
+                
+                </tbody>
+                
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+         
+        </div>
+        <!-- /.col -->
+      </div>
+
+{% endblock content %}
+</div>
+
+{% block scripts %}
+<!-- DataTables -->
+<script src="{{url_for('static', filename='bower_components/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+<script src="{{url_for('static', filename='bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
+<script>
+        $(function () {
+          $('#example1').DataTable()
+          $('#example2').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'searching'   : false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false
+          })
+        })
+</script>
+{% endblock %}
